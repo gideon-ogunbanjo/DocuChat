@@ -66,8 +66,9 @@ def user_input(user_question):
 
 def main():
     st.set_page_config(
-        page_title  = "💬 DocuChat",
-        layout="centered"
+        page_icon  = "💬",
+        page_title  = "DocuChat",
+        layout = "centered"
     )
     st.header("💬 DocuChat - PDF Research Chat Tool")
     pdf_docs = st.file_uploader("Upload your PDF, click on the submit button, ask questions and get answers.", accept_multiple_files=True)

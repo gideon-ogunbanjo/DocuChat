@@ -68,6 +68,7 @@ def main():
     st.set_page_config("💬 DocuChat")
     st.header("💬 DocuChat - PDF Research Chat Tool")
     pdf_docs = st.file_uploader("Upload your PDF, click on the submit button, ask questions and get answers.", accept_multiple_files=True)
+
     if st.button("Submit & Process"):
         with st.spinner("Processing..."):
             raw_text = get_pdf_text(pdf_docs)
@@ -76,9 +77,14 @@ def main():
             st.success("Done")
 
     user_question = st.text_input("Ask a Question:")
+     # Footer with link
+    link = 'Created by [Gideon Ogunbanjo](https://gideonogunbanjo.netlify.app)'
+    st.markdown(link, unsafe_allow_html=True)
 
     if user_question:
         user_input(user_question)
+        
+
 
 if __name__ == "__main__":
     main()

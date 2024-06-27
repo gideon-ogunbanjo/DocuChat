@@ -63,7 +63,8 @@ def user_input(user_question):
     )
 
     print(response)
-    st.write("💬 DocuChat: ", response["output_text"])
+    st.markdown(f"💬 **DocuChat:** {response['output_text']}")
+
 
 def main():
     st.set_page_config(
@@ -79,7 +80,7 @@ def main():
             raw_text = get_pdf_text(pdf_docs)
             text_chunks = get_text_chunks(raw_text)
             get_vector_store(text_chunks)
-            st.success("Done")
+            st.success("File Processed Successfully")
 
     user_question = st.text_input("Ask a Question:")
      # Footer with link

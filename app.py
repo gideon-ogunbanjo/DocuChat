@@ -35,13 +35,14 @@ def get_vector_store(text_chunks):
 
 def get_conversational_chain():
     prompt_template = """
-    Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not in
-    the provided context just say, "I'm sorry, the answer is not available in the context you have provided", don't provide the wrong answer\n\n
-    Context:\n {context}?\n
-    Question: \n{question}\n
+        Answer the question as detailed as possible from the provided context. If the answer is not available in the provided context, 
+        respond with "I'm sorry, the answer is not available in the context you have provided". Do not provide incorrect answers.\n\n
+        Context: {context}?\n
+        Question: {question}\n
 
-    Answer:
-    """
+        Answer:
+        """
+
 
     model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3)
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
@@ -62,7 +63,7 @@ def user_input(user_question):
     )
 
     print(response)
-    st.write("Output: ", response["output_text"])
+    st.write("💬 DocuChat: ", response["output_text"])
 
 def main():
     st.set_page_config(

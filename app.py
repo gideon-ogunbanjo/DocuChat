@@ -43,7 +43,6 @@ def get_conversational_chain():
         Answer:
         """
 
-
     model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3)
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
@@ -65,32 +64,33 @@ def user_input(user_question):
     print(response)
     st.markdown(f"💬 **DocuChat:** {response['output_text']}")
 
-
 def main():
     st.set_page_config(
-        page_icon  = "💬",
-        page_title  = "DocuChat",
-        layout = "centered"
+        page_icon="💬",
+        page_title="DocuChat",
+        layout="centered"
     )
     st.header("💬 DocuChat - PDF Research Chat Tool")
     pdf_docs = st.file_uploader("Upload your PDF, click on the submit button, ask questions and get answers.", accept_multiple_files=True)
 
     if st.button("Submit & Process"):
-        with st.spinner("Processing..."):
-            raw_text = get_pdf_text(pdf_docs)
-            text_chunks = get_text_chunks(raw_text)
-            get_vector_store(text_chunks)
-            st.success("File Processed Successfully")
+        if not pdf_docs:
+            st.warning("Please upload a file first.")
+        else:
+            with st.spinner("Processing..."):
+                raw_text = get_pdf_text(pdf_docs)
+                text_chunks = get_text_chunks(raw_text)
+                get_vector_store(text_chunks)
+                st.success("File Processed Successfully")
 
     user_question = st.text_input("Ask a Question:")
-     # Footer with link
+    
+    # Footer with link
     link = 'Created by [Gideon Ogunbanjo](https://gideonogunbanjo.netlify.app)'
     st.markdown(link, unsafe_allow_html=True)
 
     if user_question:
         user_input(user_question)
-        
-
 
 if __name__ == "__main__":
     main()

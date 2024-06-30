@@ -71,11 +71,20 @@ def main():
         layout="centered"
     )
     st.header("💬 DocuChat - PDF Research Chat Tool")
-    pdf_docs = st.file_uploader("Upload your PDF, click on the submit button, ask questions and get answers.", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Upload your PDF, click on the submit button, ask questions and get answers.", accept_multiple_files=True)
+
+    # Feature to filter out non-PDF files
+    if uploaded_files:
+        pdf_docs = [file for file in uploaded_files if file.type == "application/pdf"]
+        non_pdf_files = [file.name for file in uploaded_files if file.type != "application/pdf"]
+        if non_pdf_files:
+            st.warning(f"Please upload PDF files only. The '{', '.join(non_pdf_files)}' file(s) are not PDFs.")
 
     if st.button("Submit & Process"):
-        if not pdf_docs:
+        if not uploaded_files:
             st.warning("Please upload a file first.")
+        elif not pdf_docs:
+            st.warning("Please upload at least one PDF file.")
         else:
             with st.spinner("Processing..."):
                 raw_text = get_pdf_text(pdf_docs)

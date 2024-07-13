@@ -114,6 +114,10 @@ def main():
         st.session_state.messages.append({"role": "assistant", "content": response_content})
         with st.chat_message("assistant"):
             st.markdown(response_content)
+            
+    if st.button("Clear Chat"):
+        st.session_state.messages = []
+        st.experimental_rerun()
 
     # Footer with link
     link = 'Created by [Gideon Ogunbanjo](https://gideonogunbanjo.netlify.app)'

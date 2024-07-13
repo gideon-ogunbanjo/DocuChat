@@ -1,4 +1,3 @@
-# Libraries
 import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -61,8 +60,7 @@ def user_input(user_question):
         {"input_documents": docs, "question": user_question}, return_only_outputs=True
     )
 
-    print(response)
-    st.markdown(f"💬 **DocuChat:** {response['output_text']}")
+    return response['output_text']
 
 def main():
     st.set_page_config(
@@ -71,9 +69,12 @@ def main():
         layout="centered"
     )
     st.header("💬 DocuChat - PDF Research Chat Tool")
+
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
     uploaded_files = st.file_uploader("Upload your PDF, click on the submit button, ask questions and get answers.", accept_multiple_files=True)
 
-    # Feature to filter out non-PDF files
     if uploaded_files:
         pdf_docs = [file for file in uploaded_files if file.type == "application/pdf"]
         non_pdf_files = [file.name for file in uploaded_files if file.type != "application/pdf"]
@@ -92,14 +93,31 @@ def main():
                 get_vector_store(text_chunks)
                 st.success("File Processed Successfully")
 
-    user_question = st.text_input("Ask a Question:")
-    
+    # Existing chat messages
+    for message in st.session_state.messages:
+        with st.chat_message("user" if message["role"] == "user" else "assistant"):
+            st.markdown(message["content"])
+
+    # User input text box
+    if prompt := st.chat_input("Ask a question about your PDF files:"):
+
+        # User message
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        # Typing animation
+        with st.spinner("Typing..."):
+            response_content = user_input(prompt)
+
+        # Assistant message
+        st.session_state.messages.append({"role": "assistant", "content": response_content})
+        with st.chat_message("assistant"):
+            st.markdown(response_content)
+
     # Footer with link
     link = 'Created by [Gideon Ogunbanjo](https://gideonogunbanjo.netlify.app)'
     st.markdown(link, unsafe_allow_html=True)
-
-    if user_question:
-        user_input(user_question)
 
 if __name__ == "__main__":
     main()
